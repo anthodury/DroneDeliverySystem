@@ -1,4 +1,7 @@
 #include "Weather.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 void *changeWeather(void *data)
 {

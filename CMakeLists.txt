@@ -4,5 +4,10 @@ project(DroneDeliverySystem)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread")
 
-set(SOURCE_FILES src/main.c include/Client.h include/Package.h include/Drone.h include/MotherShip.h include/Weather.h)
+include_directories(
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/
+)
+
+
+set(SOURCE_FILES src/main.c src/Weather.c include/Client.h include/Package.h include/Drone.h include/MotherShip.h include/Weather.h)
 add_executable(DroneDeliverySystem ${SOURCE_FILES})

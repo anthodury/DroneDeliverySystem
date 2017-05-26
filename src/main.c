@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <signal.h>
 
-#include "../include/Weather.h"
+#include "Weather.h"
 
 int main() {
 	printf("Hello, World!\n");

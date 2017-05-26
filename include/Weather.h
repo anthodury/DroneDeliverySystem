@@ -3,6 +3,7 @@
 #define DRONEDELIVERYSYSTEM_WEATHER_HPP
 
 #include <sys/param.h>
+#include <pthread.h>
 
 typedef enum  {Sun,Wind,Rain} Weather;
 
