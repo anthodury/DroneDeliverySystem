@@ -6,16 +6,17 @@
 void *changeWeather(void *data)
 {
     while(1){
-        // Change weather
-        // Notify drone and others ...
-        printf("Weather changed\n");
-        unsigned int timeWaiting=3+rand()%30;
-        sleep(timeWaiting);
+	    pthread_mutex_lock(&mutexWind);
+	    wind = rand() % MAX_WIND;
+	    printf("Wind changed to %d\n",wind);
+	    pthread_mutex_unlock(&mutexWind);
+	    sleep(WEATHER_SLEEP);
     }
 }
 
 pthread_t initWeather(void){
     pthread_t threadWeather;
+	pthread_mutex_init(&mutexWind,NULL);
     if (pthread_create(&threadWeather, 0, changeWeather,NULL)){
         printf("error creating thread weather");
     }
