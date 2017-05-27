@@ -3,8 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-void *changeWeather(void *data)
-{
+void *changeWeather(void *data) {
     while(1){
 	    pthread_mutex_lock(&mutexWind);
 	    wind = rand() % MAX_WIND;
@@ -14,7 +13,7 @@ void *changeWeather(void *data)
     }
 }
 
-pthread_t initWeather(void){
+pthread_t initWeather(void) {
     pthread_t threadWeather;
 	pthread_mutex_init(&mutexWind,NULL);
     if (pthread_create(&threadWeather, 0, changeWeather,NULL)){
