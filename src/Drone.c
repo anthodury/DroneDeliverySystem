@@ -3,6 +3,7 @@
 #include <Weather.h>
 #include <TrafficLanes.h>
 #include <time.h>
+#include <MotherShip.h>
 
 
 Drone createDrone() {
@@ -20,7 +21,7 @@ void  deliver(Drone* drone, Client* client) {
 		move(drone,client);
 		sleep(1);
 		pthread_mutex_unlock(&mutexLanes[client->trafficLane][0]);
-		printf("Drone going %d\n",i);
+		printf("Drone %li going %d\n",__threadid(),i);
 	}
 
 	printf("DRONE  ARRIVED TO CLIENT HOUSE  BATTERY : %d\n",drone->currentBattery);
@@ -50,6 +51,7 @@ void move(Drone* drone , Client* client) {
 void * run (void * data) {
 	srand(time(NULL));
 	Drone drone = createDrone();
+	recharge(&drone);
 	Client client = createClient();
 	deliver(&drone,&client);
 	freeClient(&client);
@@ -58,5 +60,4 @@ void * run (void * data) {
 pthread_t initDrone () {
 	pthread_t threadDrone;
 	pthread_create(&threadDrone,NULL,run,NULL);
-	pthread_exit(NULL);
 }

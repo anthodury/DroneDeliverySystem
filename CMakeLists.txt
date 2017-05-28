@@ -9,5 +9,5 @@ include_directories(
 )
 
 
-set(SOURCE_FILES src/main.c src/Weather.c include/Client.h include/Package.h include/Drone.h include/MotherShip.h include/Weather.h src/Package.c src/Drone.c src/Client.c include/TrafficLanes.h src/TrafficLanes.c)
+set(SOURCE_FILES src/main.c src/Weather.c include/Client.h include/Package.h include/Drone.h include/MotherShip.h include/Weather.h src/Package.c src/Drone.c src/Client.c include/TrafficLanes.h src/TrafficLanes.c src/MotherShip.c)
 add_executable(DroneDeliverySystem ${SOURCE_FILES})

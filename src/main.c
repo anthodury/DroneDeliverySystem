@@ -7,6 +7,7 @@
 #include <Drone.h>
 #include <Weather.h>
 #include <TrafficLanes.h>
+#include <MotherShip.h>
 
 int main() {
 	initLanesMutex();
@@ -24,6 +25,10 @@ int main() {
 	printf("Client test %d %d %d ", client.trafficLane, client.distance, client.command->weight);
 	freeClient(&client);
 
+
+	sem_init(&semRecharge,0,CHARGER);
+	initDrone();
+	initDrone();
 	initDrone();
 	pthread_exit(NULL);
 
