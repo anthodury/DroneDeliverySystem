@@ -21,7 +21,7 @@ void  deliver(Drone* drone, Client* client) {
 		move(drone,client);
 		sleep(1);
 		pthread_mutex_unlock(&mutexLanes[client->trafficLane][0]);
-		printf("Drone %li going %d\n",__threadid(),i);
+		printf("Drone %li going %d\n",(int) pthread_self(),i);
 	}
 
 	printf("DRONE  ARRIVED TO CLIENT HOUSE  BATTERY : %d\n",drone->currentBattery);

@@ -14,7 +14,7 @@ void recharge(Drone* drone) {
 	for(int i = drone->currentBattery ; i < drone->maxBattery ; ++ i ) {
 		usleep(100000);
 		drone->currentBattery ++ ;
-		printf("Drone %li Recharging %d\n",__threadid(), drone->currentBattery);
+        printf("Drone %li Recharging %d\n", (int) pthread_self(), drone->currentBattery);
 	}
 	sem_post(&semRecharge);
 }
