@@ -27,9 +27,9 @@ int main() {
 
 
 	sem_init(&semRecharge,0,CHARGER);
-	initDrone();
-	initDrone();
-	initDrone();
+
+	//initMotherShip();
+
 	pthread_exit(NULL);
 
 	return 0;

@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <Client.h>
 #include <TrafficLanes.h>
-#include <time.h>
 
 Client createClient() {
 	Package * package = (Package*) malloc(sizeof(Package));
@@ -26,3 +25,4 @@ int hasTarget(Client *client) {
 void freeClient(Client * client) {
 	free(client->command);
 }
+

@@ -4,6 +4,7 @@
 #include <TrafficLanes.h>
 #include <time.h>
 #include <MotherShip.h>
+#include <Package.h>
 
 
 Drone createDrone() {
@@ -19,9 +20,9 @@ void  deliver(Drone* drone, Client* client) {
 	for(int i = 0 ; i < client->distance; ++i) {
 		pthread_mutex_lock(&mutexLanes[client->trafficLane][0]);
 		move(drone,client);
-		sleep(1);
+		//sleep(1);
 		pthread_mutex_unlock(&mutexLanes[client->trafficLane][0]);
-		printf("Drone %li going %d\n",(int) pthread_self(),i);
+		printf("Drone %d going %d\n",(int) pthread_self(),i);
 	}
 
 	printf("DRONE  ARRIVED TO CLIENT HOUSE  BATTERY : %d\n",drone->currentBattery);
@@ -35,9 +36,9 @@ void  deliver(Drone* drone, Client* client) {
 	for(int i = 0 ; i < client->distance; ++i) {
 		pthread_mutex_lock(&mutexLanes[client->trafficLane][1]);
 		move(drone,client);
+		//sleep(1);
 		pthread_mutex_unlock(&mutexLanes[client->trafficLane][1]);
 		printf("Drone going back %d\n",i);
-		sleep(1);
 	}
 }
 
@@ -45,19 +46,22 @@ void move(Drone* drone , Client* client) {
 	pthread_mutex_lock(&mutexWind);
 	drone->currentBattery -= wind;
 	pthread_mutex_unlock(&mutexWind);
-	drone->currentBattery -= client->command->weight - MOVE_BATTERY_COST;
+	drone->currentBattery -= client->command->weight + MOVE_BATTERY_COST;
 }
 
 void * run (void * data) {
-	srand(time(NULL));
-	Drone drone = createDrone();
-	recharge(&drone);
-	Client client = createClient();
-	deliver(&drone,&client);
-	freeClient(&client);
+	int id = (int) data;
+	Drone* drone = drones[id];
+	/* wait for MotherShip to unlock */
+	pthread_mutex_lock(&mutexDrones[0]);
+	printf("IN DRONE THREAD %d : %d", data, drone->currentBattery);
+	Client* toDeliver = clientToDeliver;
+	deliver(drone, toDeliver);
+	pthread_mutex_lock(&mutexDrones[id]);
+
 }
 
-pthread_t initDrone () {
+pthread_t initDrone (int index) {
 	pthread_t threadDrone;
-	pthread_create(&threadDrone,NULL,run,NULL);
+	pthread_create(&threadDrone,NULL,run,(void*)index);
 }

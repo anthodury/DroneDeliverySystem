@@ -3,7 +3,7 @@
 
 #include <Package.h>
 #include <Client.h>
-#define MAX_BATTERY 100
+#define MAX_BATTERY 2000
 #define MOVE_BATTERY_COST 2
 
 /* Available : at mother ship , Waiting : Drone arrived client's garden and waiting for him*/
@@ -36,7 +36,7 @@ void move(Drone* drone, Client* client);
  * thread handler
  */
 void * run (void * data) ;
-pthread_t initDrone () ;
+pthread_t initDrone (int index) ;
 
 
 #endif //DRONEDELIVERYSYSTEM_DRONE_HPP
