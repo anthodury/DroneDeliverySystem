@@ -26,9 +26,8 @@ int main() {
 	freeClient(&client);
 
 
-	sem_init(&semRecharge,0,CHARGER);
 
-	//initMotherShip();
+	initMotherShip();
 
 	pthread_exit(NULL);
 

@@ -6,7 +6,7 @@
 Client createClient() {
 	Package * package = (Package*) malloc(sizeof(Package));
 	*package = createPackage();
-	return (Client) {1+rand()%MAX_DISTANCE,rand()%MAX_TRAFFIC_LANES,package};
+	return (Client) {1+(rand()%MAX_DISTANCE),rand()%MAX_TRAFFIC_LANES,package};
 }
 
 int isPresent(Client *client) {

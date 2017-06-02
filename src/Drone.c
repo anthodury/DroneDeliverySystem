@@ -7,25 +7,28 @@
 #include <Package.h>
 
 
+// TODO: Make drones deliver multiple clients if possible
 Drone createDrone() {
 	return (Drone) {MAX_BATTERY,MAX_BATTERY,Available};
 }
 
 int canDeliver(Drone* drone, Client* client) {
-	return drone->currentBattery > 2 * client->distance * (client->command->weight - MAX_WIND - MOVE_BATTERY_COST);
+	return drone->currentBattery > 2 * client->distance * (client->command->weight + MAX_WIND + MOVE_BATTERY_COST);
 }
 
 void  deliver(Drone* drone, Client* client) {
+	printf("Drone %d delivering Client %p\n",pthread_self(),client);
+	drone->state = Moving;
+
 	/* going to the client*/
 	for(int i = 0 ; i < client->distance; ++i) {
 		pthread_mutex_lock(&mutexLanes[client->trafficLane][0]);
 		move(drone,client);
-		//sleep(1);
+		usleep(100000);
 		pthread_mutex_unlock(&mutexLanes[client->trafficLane][0]);
-		printf("Drone %d going %d\n",(int) pthread_self(),i);
 	}
 
-	printf("DRONE  ARRIVED TO CLIENT HOUSE  BATTERY : %d\n",drone->currentBattery);
+	printf("Drone %d arrived at Client's home  Battery : %d\n",pthread_self(),drone->currentBattery);
 
 	/**
 	 * meet the client or wait him
@@ -36,10 +39,13 @@ void  deliver(Drone* drone, Client* client) {
 	for(int i = 0 ; i < client->distance; ++i) {
 		pthread_mutex_lock(&mutexLanes[client->trafficLane][1]);
 		move(drone,client);
-		//sleep(1);
+		usleep(100000);
 		pthread_mutex_unlock(&mutexLanes[client->trafficLane][1]);
-		printf("Drone going back %d\n",i);
 	}
+	drone->state = Available;
+	printf("Drone %d arrived at MotherShip  Battery : %d\n",pthread_self(),drone->currentBattery);
+
+
 }
 
 void move(Drone* drone , Client* client) {
@@ -52,12 +58,19 @@ void move(Drone* drone , Client* client) {
 void * run (void * data) {
 	int id = (int) data;
 	Drone* drone = drones[id];
-	/* wait for MotherShip to unlock */
-	pthread_mutex_lock(&mutexDrones[0]);
-	printf("IN DRONE THREAD %d : %d", data, drone->currentBattery);
-	Client* toDeliver = clientToDeliver;
-	deliver(drone, toDeliver);
-	pthread_mutex_lock(&mutexDrones[id]);
+
+	while(1) {
+		/* wait for MotherShip to unlock */
+		sem_wait(&semDrones[id]);
+		if(message) {
+			Client* toDeliver = clientToDeliver;
+			sem_post(&semSynch);
+			deliver(drone, toDeliver);
+		}
+		else {
+			recharge(drone);
+		}
+	}
 
 }
 
@@ -65,3 +78,4 @@ pthread_t initDrone (int index) {
 	pthread_t threadDrone;
 	pthread_create(&threadDrone,NULL,run,(void*)index);
 }
+

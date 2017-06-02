@@ -11,20 +11,26 @@ Client* clients[CLIENT_NUMBER];
 Client* clientToDeliver;
 
 Drone* drones[DRONES_NUMBER];
-pthread_cond_t condDrones [DRONES_NUMBER];
-pthread_mutex_t mutexDrones [DRONES_NUMBER];
+pthread_mutex_t semDrones [DRONES_NUMBER];
+sem_t semSynch ;
+int message;
+
 
 void recharge(Drone* drone) {
 	int available ;
 	sem_getvalue(&semRecharge,&available);
-	printf("Recharge Available : %d\n",available);
+	if(available <=0) {
+		printf("Drone %d WAITING for free charger\n", pthread_self());
+	}
 	sem_wait(&semRecharge);
+	printf("Drone %d RECHARGING : Battery : %d\n",pthread_self(),drone->currentBattery);
 	for(int i = drone->currentBattery ; i < drone->maxBattery ; ++ i ) {
-		usleep(100000);
+		usleep(10000);
 		drone->currentBattery ++ ;
-        printf("Drone %d Recharging %d\n", (int) pthread_self(), drone->currentBattery);
 	}
 	sem_post(&semRecharge);
+	printf("Drone %d FINISHED RECHARGING\n", pthread_self());
+	drone->state=Available;
 }
 
 void runMotherShipThr() {
@@ -35,20 +41,37 @@ void runMotherShipThr() {
 }
 
 void * manageCommand(void *data) {
-	int clientsSize = CLIENT_NUMBER;
+	printf("MotherShip thr : %d",pthread_self());
 	for(int i = 0 ; i < CLIENT_NUMBER;++i) {
-		Client* toDeliver = clients[i];
+		Client* client = clients[i];
+		clientToDeliver = clients[i];
 		/* Find a drone who can deliver the client*/
-		// TODO : While loop instead, recharge when cant deliver and available
-		for(int k = 0; k < DRONES_NUMBER; ++k) {
-			if(drones[k]->state == Available && canDeliver(drones[k], toDeliver)) {
-				// unlock the mutex so that the drone's thread can run
-				pthread_mutex_unlock(&mutexDrones[i]);
-				clientToDeliver = toDeliver;
+		int found = 0;
+		do {
+			for(int k = 0; k < DRONES_NUMBER; ++k) {
+				if(drones[k]->state == Available) {
+					if(canDeliver(drones[k], clientToDeliver)) {
+						// unlock the mutex so that the drone's thread can run
+						drones[k]->state = Moving;
 
-				break;
+						message = 1;
+						//pthread_mutex_unlock(&semDrones[k]);
+						sem_post(&semDrones[k]);
+						sem_wait(&semSynch);
+						found = 1;
+						break;
+					}
+					else {
+						message = 0;
+						drones[k]->state = Moving;
+						//pthread_mutex_unlock(&semDrones[k]);
+						sem_post(&semDrones[k]);
+
+						//message to recharge
+					}
+				}
 			}
-		}
+		} while(!found);
 	}
 
 	return NULL;
@@ -59,13 +82,14 @@ void * manageCommand(void *data) {
  */
  void initMotherShip() {
 	for(int i = 0 ; i < DRONES_NUMBER ; ++i) {
-	//	pthread_cond_init(&condDrones[i],NULL);
-		pthread_mutex_init(&mutexDrones[i],NULL);
 
+		//pthread_mutex_init(&semDrones[i],NULL);
+		sem_init(&semDrones[i],0,0);
 		drones[i] = (Drone*) malloc(sizeof(Drone));
 		*drones[i] = createDrone();
+
 		// blocks the drone thread, waiting to deliver
-		pthread_mutex_lock(&mutexDrones[i]);
+		//pthread_mutex_lock(&semDrones[i]);
 		initDrone(i);
 
 	}
@@ -75,5 +99,7 @@ void * manageCommand(void *data) {
 	}
 	// TODO :sort Clients by priority
 	pthread_t motherShipTh ;
+	sem_init(&semSynch,0,0);
+	sem_init(&semRecharge,0,CHARGER);
 	pthread_create(&motherShipTh,NULL,manageCommand,NULL);
 }
