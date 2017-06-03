@@ -19,4 +19,3 @@ int hasTarget(Client *client) {
 void freeClient(Client * client) {
 	free(client->command);
 }
-

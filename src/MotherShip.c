@@ -5,6 +5,7 @@
 #include <Client.h>
 #include <Package.h>
 #include <malloc.h>
+#include <stdlib.h>
 
 sem_t semRecharge;
 Client* clients[CLIENT_NUMBER];
@@ -74,7 +75,6 @@ void * manageCommand(void *data) {
 			}
 		} while(!found);
 	}
-
 	return NULL;
 }
 
@@ -88,19 +88,24 @@ void * manageCommand(void *data) {
 		sem_init(&semDrones[i],0,0);
 		drones[i] = (Drone*) malloc(sizeof(Drone));
 		*drones[i] = createDrone();
-
-		// blocks the drone thread, waiting to deliver
-		//pthread_mutex_lock(&semDrones[i]);
 		initDrone(i);
-
 	}
+
 	for(int i = 0 ; i < CLIENT_NUMBER; ++i) {
 		clients[i] = (Client*) malloc(sizeof(Drone));
 		*clients[i] = createClient();
 	}
-	// TODO :sort Clients by priority
+
 	pthread_t motherShipTh ;
 	sem_init(&semSynch,0,0);
 	sem_init(&semRecharge,0,CHARGER);
+
+	//Sorting clients by higher priority
+	qsort(clients,CLIENT_NUMBER,sizeof(clients[0]),compareClients);
 	pthread_create(&motherShipTh,NULL,manageCommand,NULL);
+}
+
+int compareClients(const void * elem1, const void * elem2 ) {
+	Client * cl1 = *((Client**) elem1), *cl2 = *((Client**) elem2);
+	return cl2->command->priority - cl1->command->priority;
 }

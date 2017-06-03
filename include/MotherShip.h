@@ -25,5 +25,6 @@ extern int message;
 void initMotherShip ();
 void recharge(Drone* drone);
 void * manageCommand(void *data);
+int compareClients(const void * elem1, const void * elem2 );
 
 #endif //DRONEDELIVERYSYSTEM_MOTHERSHIP_HPP
