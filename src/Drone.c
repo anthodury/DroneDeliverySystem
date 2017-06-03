@@ -34,7 +34,7 @@ void  deliver(Drone* drone, Client* client) {
 	int targetPresent=0;
 	//Wait 10 secondes max before leave if target is not present
 	for(int i=0;i<10;++i){
-		if(hasTarget(client)==1){
+		if(hasTarget(client)){
 			targetPresent=1;
 			printf("OK, target is present\n");
 			break;
@@ -43,10 +43,10 @@ void  deliver(Drone* drone, Client* client) {
 		sleep(1);
 	}
 	int clientPresent=0;
-	if(isPresent(client)){
+	if(targetPresent){
 		//Wait 30 secondes max before leave if client is not present
 		for(int i=0;i<30;++i){
-			if(hasTarget(client)==1){
+			if(isPresent(client)){
 				clientPresent=1;
 				printf("OK, client is present\n");
 				break;
