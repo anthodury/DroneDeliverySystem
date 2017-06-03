@@ -11,7 +11,8 @@ Client* clients[CLIENT_NUMBER];
 Client* clientToDeliver;
 
 Drone* drones[DRONES_NUMBER];
-pthread_mutex_t semDrones [DRONES_NUMBER];
+//pthread_mutex_t semDrones [DRONES_NUMBER];
+sem_t semDrones[DRONES_NUMBER];
 sem_t semSynch ;
 int message;
 
