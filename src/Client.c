@@ -10,16 +10,10 @@ Client createClient() {
 }
 
 int isPresent(Client *client) {
-	/**
-	 * TO DO
-	 */
-	return 1;
+	return ((rand()%100) < PERCENTAGE_PRESENCE_CLIENT);
 }
 int hasTarget(Client *client) {
-	/**
-	 * TO DO
-	 */
-	return 1;
+	return ((rand()%100) < PERCENTAGE_PRESENCE_TARGET);
 }
 
 void freeClient(Client * client) {

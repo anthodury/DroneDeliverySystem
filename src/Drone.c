@@ -30,10 +30,38 @@ void  deliver(Drone* drone, Client* client) {
 
 	printf("Drone %d arrived at Client's home  Battery : %d\n",pthread_self(),drone->currentBattery);
 
-	/**
-	 * meet the client or wait him
-	 * TO COMPLETE
-	 */
+
+	int targetPresent=0;
+	//Wait 10 secondes max before leave if target is not present
+	for(int i=0;i<10;++i){
+		if(hasTarget(client)==1){
+			targetPresent=1;
+			printf("OK, target is present\n");
+			break;
+		}
+		printf("Target is not present. Will leave if no target in %d seconds\n",10-i);
+		sleep(1);
+	}
+	int clientPresent=0;
+	if(isPresent(client)){
+		//Wait 30 secondes max before leave if client is not present
+		for(int i=0;i<30;++i){
+			if(hasTarget(client)==1){
+				clientPresent=1;
+				printf("OK, client is present\n");
+				break;
+			}
+			printf("Client is not present. Will leave if no client in %d seconds\n",30-i);
+			sleep(1);
+		}
+	}
+	if(clientPresent && targetPresent){
+		printf("Ready for delivery\n");
+		/**
+         * Remove from Slot
+         * TO COMPLETE
+         */
+	}
 
 	/* go back to the Mother Ship*/
 	for(int i = 0 ; i < client->distance; ++i) {

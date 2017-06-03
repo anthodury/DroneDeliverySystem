@@ -10,12 +10,12 @@
 //TODO: SLOTS
 
 extern sem_t semRecharge;
-extern Client* clients [];
+extern Client* clients[];
 extern Client* clientToDeliver;
 
 extern Drone* drones[DRONES_NUMBER];
-extern sem_t semDrones [DRONES_NUMBER];
-extern sem_t semSynch ;
+extern sem_t semDrones[DRONES_NUMBER];
+extern sem_t semSynch;
 
 extern int message;
 

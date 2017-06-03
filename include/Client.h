@@ -5,6 +5,8 @@
 #include <pthread.h>
 
 #define MAX_DISTANCE 50
+#define PERCENTAGE_PRESENCE_CLIENT 40
+#define PERCENTAGE_PRESENCE_TARGET 50
 
 typedef struct  {
 	int distance;
