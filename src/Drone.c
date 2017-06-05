@@ -29,7 +29,6 @@ int canDeliver2(Drone* drone, Client *arrayClient[], int size) {
 	return drone->currentBattery > cost;
 }
 
-
 void  deliver(Drone* drone, Client* client) {
 	printf("Drone %d delivering Client %p\n",pthread_self(),client);
 	drone->state = Moving;
@@ -62,19 +61,28 @@ void  deliver(Drone* drone, Client* client) {
 	drone->state = Available;
 	printf("Drone %d arrived at MotherShip  Battery : %d\n",pthread_self(),drone->currentBattery);
 }
+/*
+ * TODO with multiple clients
+void  deliver2(Drone* drone, Client* client / Client * client []) {
+
+}
+ */
 
 int targetAndClientPresent(Client* client){
 	int targetPresent=0;
 	//Wait 10 secondes max before leave if target is not present
 	for(int i=0;i<10;++i){
-		if(hasTarget(client)){
+		if(hasTarget(client) ){
 			targetPresent=1;
 			printf("OK, target is present\n");
 			break;
 		}
-		printf("Target is not present. Will leave if no target in %d seconds\n",10-i);
+		//printf("Target is not present. Will leave if no target in %d seconds\n",10-i);
 		sleep(1);
 	}
+
+	if(!targetPresent)
+		printf("Target Absent ! \n");
 
 	int clientPresent=0;
 	if(targetPresent){
@@ -85,10 +93,13 @@ int targetAndClientPresent(Client* client){
 				printf("OK, client is present\n");
 				break;
 			}
-			printf("Client is not present. Will leave if no client in %d seconds\n",30-i);
+			//printf("Client is not present. Will leave if no client in %d seconds\n",30-i);
 			sleep(1);
 		}
 	}
+	if(!clientPresent)
+		printf("Client Absent  !\n");
+
 	return (clientPresent && targetPresent);
 }
 
@@ -109,6 +120,7 @@ void * run (void * data) {
 		if(message) {
 			Client* toDeliver = clientToDeliver;
 			sem_post(&semSynch);
+			//TODO : deliver With multiple clients
 			deliver(drone, toDeliver);
 		}
 		else {
