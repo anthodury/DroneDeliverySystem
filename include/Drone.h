@@ -38,5 +38,7 @@ void move(Drone* drone, Client* client);
 void * run (void * data) ;
 pthread_t initDrone (int index) ;
 
+int targetAndClientPresent(Client* client);
+
 
 #endif //DRONEDELIVERYSYSTEM_DRONE_HPP

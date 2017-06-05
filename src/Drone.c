@@ -30,7 +30,26 @@ void  deliver(Drone* drone, Client* client) {
 
 	printf("Drone %d arrived at Client's home  Battery : %d\n",pthread_self(),drone->currentBattery);
 
+	if(targetAndClientPresent(client)){
+		printf("Ready for delivery\n");
+		/**
+         * Remove from Slot
+         * TO COMPLETE
+         */
+	}
 
+	/* go back to the Mother Ship*/
+	for(int i = 0 ; i < client->distance; ++i) {
+		pthread_mutex_lock(&mutexLanes[client->trafficLane][1]);
+		move(drone,client);
+		usleep(100000);
+		pthread_mutex_unlock(&mutexLanes[client->trafficLane][1]);
+	}
+	drone->state = Available;
+	printf("Drone %d arrived at MotherShip  Battery : %d\n",pthread_self(),drone->currentBattery);
+}
+
+int targetAndClientPresent(Client* client){
 	int targetPresent=0;
 	//Wait 10 secondes max before leave if target is not present
 	for(int i=0;i<10;++i){
@@ -56,23 +75,7 @@ void  deliver(Drone* drone, Client* client) {
 			sleep(1);
 		}
 	}
-	if(clientPresent && targetPresent){
-		printf("Ready for delivery\n");
-		/**
-         * Remove from Slot
-         * TO COMPLETE
-         */
-	}
-
-	/* go back to the Mother Ship*/
-	for(int i = 0 ; i < client->distance; ++i) {
-		pthread_mutex_lock(&mutexLanes[client->trafficLane][1]);
-		move(drone,client);
-		usleep(100000);
-		pthread_mutex_unlock(&mutexLanes[client->trafficLane][1]);
-	}
-	drone->state = Available;
-	printf("Drone %d arrived at MotherShip  Battery : %d\n",pthread_self(),drone->currentBattery);
+	return (clientPresent && targetPresent);
 }
 
 void move(Drone* drone , Client* client) {

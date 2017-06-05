@@ -10,6 +10,7 @@
 sem_t semRecharge;
 Client* clients[CLIENT_NUMBER];
 int isDelivered[CLIENT_NUMBER];
+int isDelivering[CLIENT_NUMBER];
 Client* clientToDeliver;
 
 Drone* drones[DRONES_NUMBER];
@@ -48,7 +49,7 @@ void * manageCommand(void *data) {
 	printf("MotherShip thr : %d", pthread_self());
 	do {
 		for(int i = 0; i < CLIENT_NUMBER; ++i) {
-			if(!isDelivered[i]) {
+			if(!isDelivered[i] && !isDelivering[i]) {
 				Client* client = clients[i];
 				clientToDeliver = clients[i];
 				/* Find a drone who can deliver the client*/
@@ -80,10 +81,17 @@ void * manageCommand(void *data) {
 				} while(!found);
 			}
 		}
-	} while(1); // TODO : condition check if there is still client to deliver ( who weren't present when drone delivered)
+
+	} while(areAllDelivered()); // check if there is still client to deliver ( who weren't present when drone delivered)
 	return NULL;
 }
 
+int areAllDelivered(){
+    for(int i=0;i<CLIENT_NUMBER;++i){
+        if(!isDelivered[i]) return 0;
+    }
+    return 1;
+}
 /**
  * inits clients, drones, and mutex
  */
