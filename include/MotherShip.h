@@ -7,10 +7,13 @@
 #define DRONES_NUMBER 4
 #define CLIENT_NUMBER 200
 
+
 //TODO: SLOTS
 
 extern sem_t semRecharge;
 extern Client* clients[];
+extern int isDelivered[CLIENT_NUMBER];
+
 extern Client* clientToDeliver;
 
 extern Drone* drones[DRONES_NUMBER];

@@ -42,6 +42,7 @@ void  deliver(Drone* drone, Client* client) {
 		printf("Target is not present. Will leave if no target in %d seconds\n",10-i);
 		sleep(1);
 	}
+
 	int clientPresent=0;
 	if(targetPresent){
 		//Wait 30 secondes max before leave if client is not present
@@ -72,8 +73,6 @@ void  deliver(Drone* drone, Client* client) {
 	}
 	drone->state = Available;
 	printf("Drone %d arrived at MotherShip  Battery : %d\n",pthread_self(),drone->currentBattery);
-
-
 }
 
 void move(Drone* drone , Client* client) {

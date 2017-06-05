@@ -9,12 +9,14 @@
 
 sem_t semRecharge;
 Client* clients[CLIENT_NUMBER];
+int isDelivered[CLIENT_NUMBER];
 Client* clientToDeliver;
 
 Drone* drones[DRONES_NUMBER];
 //pthread_mutex_t semDrones [DRONES_NUMBER];
 sem_t semDrones[DRONES_NUMBER];
 sem_t semSynch ;
+// message for the current drone
 int message;
 
 
@@ -43,38 +45,42 @@ void runMotherShipThr() {
 }
 
 void * manageCommand(void *data) {
-	printf("MotherShip thr : %d",pthread_self());
-	for(int i = 0 ; i < CLIENT_NUMBER;++i) {
-		Client* client = clients[i];
-		clientToDeliver = clients[i];
-		/* Find a drone who can deliver the client*/
-		int found = 0;
-		do {
-			for(int k = 0; k < DRONES_NUMBER; ++k) {
-				if(drones[k]->state == Available) {
-					if(canDeliver(drones[k], clientToDeliver)) {
-						// unlock the mutex so that the drone's thread can run
-						drones[k]->state = Moving;
+	printf("MotherShip thr : %d", pthread_self());
+	do {
+		for(int i = 0; i < CLIENT_NUMBER; ++i) {
+			if(!isDelivered[i]) {
+				Client* client = clients[i];
+				clientToDeliver = clients[i];
+				/* Find a drone who can deliver the client*/
+				int found = 0;
+				do {
+					for(int k = 0; k < DRONES_NUMBER; ++k) {
+						if(drones[k]->state == Available) {
+							if(canDeliver(drones[k], clientToDeliver)) {
+								// unlock the mutex so that the drone's thread can run
+								drones[k]->state = Moving;
 
-						message = 1;
-						//pthread_mutex_unlock(&semDrones[k]);
-						sem_post(&semDrones[k]);
-						sem_wait(&semSynch);
-						found = 1;
-						break;
-					}
-					else {
-						message = 0;
-						drones[k]->state = Moving;
-						//pthread_mutex_unlock(&semDrones[k]);
-						sem_post(&semDrones[k]);
+								message = 1;
+								//pthread_mutex_unlock(&semDrones[k]);
+								sem_post(&semDrones[k]);
+								sem_wait(&semSynch);
+								found = 1;
+								break;
+							}
+							else {
+								message = 0;
+								drones[k]->state = Moving;
+								//pthread_mutex_unlock(&semDrones[k]);
+								sem_post(&semDrones[k]);
 
-						//message to recharge
+								//message to recharge
+							}
+						}
 					}
-				}
+				} while(!found);
 			}
-		} while(!found);
-	}
+		}
+	} while(1); // TODO : condition check if there is still client to deliver ( who weren't present when drone delivered)
 	return NULL;
 }
 
