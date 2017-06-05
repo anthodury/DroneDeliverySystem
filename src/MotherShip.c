@@ -47,13 +47,6 @@ void runMotherShipThr() {
 
 
 void selectNeighborsClients(Drone *drone, Client *clientToDeliver, Client *selection[], int selectionSize){
-    int allowedClients[CLIENT_NUMBER];
-    for(int i=0;i<CLIENT_NUMBER;++i){
-        // Not already delivered, not currently delivering and is in the same trafficLane
-        if(!isDelivered[i] && !isDelivering[i] && clients[i]->trafficLane==clientToDeliver->trafficLane)
-            allowedClients[i]=1;
-    }
-
     // Selection is the functional selection
     selectionSize=1;
     selection=malloc(selectionSize * sizeof(Client *));
@@ -63,22 +56,15 @@ void selectNeighborsClients(Drone *drone, Client *clientToDeliver, Client *selec
     Client **toTest=malloc((selectionSize+1) * sizeof(Client *));
 
     for(int i=0;i<CLIENT_NUMBER;++i){
-        int nbreFound=0;
-        for(int j=0;j<CLIENT_NUMBER;++j){
-            if(allowedClients[j]) {
-                toTest[selectionSize]=clients[j];
+            if(!isDelivered[i] && !isDelivering[i] && clients[i]->trafficLane==clientToDeliver->trafficLane) {
+                toTest[selectionSize]=clients[i];
                 if (canDeliver2(drone, toTest, selectionSize+1)) {
                     selection=toTest; // Selection updated
                     selectionSize++;
                     toTest=realloc(selection,selectionSize+1);// Increase toTest size
-                    nbreFound++;
                     printf("Found new client to deliver on the same traject  \n");
-                }else{
-                    allowedClients[i]=0;
-                }
             }
         }
-        if(nbreFound==0)break;
     }
     free(toTest);// Release memory space allocated to toTest
     printf("Drone will travel with %d client(s) to deliver %d\n",selectionSize);
