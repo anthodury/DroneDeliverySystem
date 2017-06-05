@@ -47,24 +47,23 @@ void runMotherShipThr() {
 
 
 void selectNeighborsClients(Drone *drone, Client *clientToDeliver, Client *selection[], int selectionSize){
-    // Selection is the functional selection
     selectionSize=1;
-    selection=malloc(selectionSize * sizeof(Client *));
-    selection[0]=clientToDeliver;
-
-    // toTest is the experimental selection
     Client **toTest=malloc((selectionSize+1) * sizeof(Client *));
+    toTest[0]=clientToDeliver;
 
     for(int i=0;i<CLIENT_NUMBER;++i){
-            if(!isDelivered[i] && !isDelivering[i] && clients[i]->trafficLane==clientToDeliver->trafficLane) {
-                toTest[selectionSize]=clients[i];
-                if (canDeliver2(drone, toTest, selectionSize+1)) {
-                    selection=toTest; // Selection updated
-                    selectionSize++;
-                    toTest=realloc(selection,selectionSize+1);// Increase toTest size
-                    printf("Found new client to deliver on the same traject  \n");
+        if(!isDelivered[i] && !isDelivering[i] && clients[i]->trafficLane==clientToDeliver->trafficLane && clients[i]!=clientToDeliver) {
+            toTest[selectionSize]=clients[i];
+            if (canDeliver2(drone, toTest, selectionSize+1)) {
+                selectionSize++;
+                toTest=realloc(toTest,selectionSize+1);// Increase toTest size
+                printf("Found new client to deliver on the same traject\n");
             }
         }
+    }
+    selection=malloc(selectionSize * sizeof(Client *));
+    for(int i=0;i<selectionSize;++i){
+        selection[i]=toTest[i];
     }
     free(toTest);// Release memory space allocated to toTest
     printf("Drone will travel with %d client(s) to deliver %d\n",selectionSize);
