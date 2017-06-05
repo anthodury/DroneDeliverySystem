@@ -16,6 +16,20 @@ int canDeliver(Drone* drone, Client* client) {
 	return drone->currentBattery > 2 * client->distance * (client->command->weight + MAX_WIND + MOVE_BATTERY_COST);
 }
 
+int canDeliver2(Drone* drone, Client arrayClient[], int size) {
+	int cost, distanceMax=0;
+	for(int i=0;i<size;++i){
+		int currentDistance=arrayClient[i].distance;
+		cost+=currentDistance * arrayClient[i].command->weight;
+
+		if(distanceMax < currentDistance) distanceMax=currentDistance;
+	}
+	cost+=2 * distanceMax * (MAX_WIND+MOVE_BATTERY_COST);
+
+	return drone->currentBattery > cost;
+}
+
+
 void  deliver(Drone* drone, Client* client) {
 	printf("Drone %d delivering Client %p\n",pthread_self(),client);
 	drone->state = Moving;

@@ -21,6 +21,7 @@ Drone createDrone();
  * returns if the Drone has enough battery to deliver the Client client
  */
 int canDeliver(Drone* drone, Client* client);
+int canDeliver2(Drone* drone, Client* arrayClients, int size);
 
 /*
  * Delivers the client
