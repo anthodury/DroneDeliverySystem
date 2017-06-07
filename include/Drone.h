@@ -3,8 +3,9 @@
 
 #include <Package.h>
 #include <Client.h>
-#define MAX_BATTERY 2000
 #define MOVE_BATTERY_COST 2
+#define MAX_BATTERY 2*MAX_DISTANCE*(MAX_WEIGHT+MOVE_BATTERY_COST+MAX_WIND) + 1
+
 
 /* Available : at mother ship , Waiting : Drone arrived client's garden and waiting for him*/
 typedef enum {Available,Moving,Waiting} State;
