@@ -19,3 +19,13 @@ int hasTarget(Client *client) {
 void freeClient(Client * client) {
 	free(client->command);
 }
+
+int compareClientsByPriority(const void* elem1, const void* elem2) {
+	Client * cl1 = *((Client**) elem1), *cl2 = *((Client**) elem2);
+	return cl2->command->priority - cl1->command->priority;
+}
+
+int compareClientsByDistance(const void* elem1, const void* elem2) {
+	Client * cl1 = *((Client**) elem1), *cl2 = *((Client**) elem2);
+	return cl1->distance - cl2->distance;
+}

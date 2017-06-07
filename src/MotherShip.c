@@ -11,7 +11,11 @@ sem_t semRecharge;
 Client* clients[CLIENT_NUMBER];
 int isDelivered[CLIENT_NUMBER];
 int isDelivering[CLIENT_NUMBER];
+
 Client* clientToDeliver;
+Client** clientToDeliver2;
+int clientToDeliverSize = 0;
+
 
 Drone* drones[DRONES_NUMBER];
 //pthread_mutex_t semDrones [DRONES_NUMBER];
@@ -46,9 +50,9 @@ void runMotherShipThr() {
 }
 
 
-void selectNeighborsClients(Drone *drone, Client *clientToDeliver, Client *selection[], int* selectionSize){
+Client ** selectNeighborsClients(Drone *drone, Client *clientToDeliver, Client **selection, int* selectionSize){
     *selectionSize=1;
-    Client **toTest=malloc((*selectionSize+1) * sizeof(Client *));
+    Client **toTest=(Client**)malloc((*selectionSize+1) * sizeof(Client *));
     toTest[0]=clientToDeliver;
 
     for(int i=0;i<CLIENT_NUMBER;++i){
@@ -56,7 +60,7 @@ void selectNeighborsClients(Drone *drone, Client *clientToDeliver, Client *selec
             toTest[*selectionSize]=clients[i];
             if (canDeliver2(drone, toTest, *selectionSize+1)) {
 	            (*selectionSize)++;
-                toTest=realloc(toTest,*selectionSize+1);// Increase toTest size
+                toTest=(Client**)realloc(toTest,sizeof(Client*)*(*selectionSize+1));// Increase toTest size
                 printf("Found new client to deliver on the same traject\n");
             }
         }
@@ -70,7 +74,8 @@ void selectNeighborsClients(Drone *drone, Client *clientToDeliver, Client *selec
 	//memcpy(selection,toTest,sizeof(Client*)*selectionSize);
 
     free(toTest);// Release memory space allocated to toTest
-    printf("Drone will travel with %d client(s) to deliver %d\n",*selectionSize);
+    printf("Drone %d will travel with %d client(s) to deliver\n",pthread_self(),*selectionSize);
+	return selection;
 }
 
 void * manageCommand(void *data) {
@@ -85,10 +90,13 @@ void * manageCommand(void *data) {
 				do {
 					for(int k = 0; k < DRONES_NUMBER; ++k) {
 						if(drones[k]->state == Available) {
+							Client ** test2 = clientToDeliver2;
+
 							if(canDeliver(drones[k], clientToDeliver)) {
 								// TODO : use selectNeighborsClients to deliver multiple clients
-								//selectNeighborsClients()
+								clientToDeliver2 = selectNeighborsClients(drones[k],clients[i],clientToDeliver2,&clientToDeliverSize);
 								drones[k]->state = Moving;
+								test2 = clientToDeliver2;
 								message = 1;
 								sem_post(&semDrones[k]);
 								sem_wait(&semSynch);
@@ -132,6 +140,7 @@ int areAllDelivered(){
 	for(int i = 0 ; i < CLIENT_NUMBER; ++i) {
 		clients[i] = (Client*) malloc(sizeof(Drone));
 		*clients[i] = createClient();
+		clients[i]->id = i;
 	}
 
 	pthread_t motherShipTh ;
@@ -139,11 +148,7 @@ int areAllDelivered(){
 	sem_init(&semRecharge,0,CHARGER);
 
 	//Sorting clients by higher priority
-	qsort(clients,CLIENT_NUMBER,sizeof(clients[0]),compareClients);
+	qsort(clients, CLIENT_NUMBER, sizeof(clients[0]), compareClientsByPriority);
 	pthread_create(&motherShipTh,NULL,manageCommand,NULL);
 }
 
-int compareClients(const void * elem1, const void * elem2 ) {
-	Client * cl1 = *((Client**) elem1), *cl2 = *((Client**) elem2);
-	return cl2->command->priority - cl1->command->priority;
-}

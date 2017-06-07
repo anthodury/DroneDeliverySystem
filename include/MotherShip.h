@@ -13,8 +13,11 @@
 extern sem_t semRecharge;
 extern Client* clients[];
 extern int isDelivered[CLIENT_NUMBER];
+extern int isDelivering[CLIENT_NUMBER];
 
 extern Client* clientToDeliver;
+extern Client** clientToDeliver2;
+extern int clientToDeliverSize;
 
 extern Drone* drones[DRONES_NUMBER];
 extern sem_t semDrones[DRONES_NUMBER];
@@ -28,7 +31,6 @@ extern int message;
 void initMotherShip ();
 void recharge(Drone* drone);
 void * manageCommand(void *data);
-int compareClients(const void * elem1, const void * elem2 );
 int areAllDelivered();
 
 #endif //DRONEDELIVERYSYSTEM_MOTHERSHIP_HPP

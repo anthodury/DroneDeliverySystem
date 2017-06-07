@@ -32,6 +32,8 @@ void deliver(Drone* drone, Client* client);
  * moves
  */
 void move(Drone* drone, Client* client);
+void move2(Drone* drone , int weight) ;
+
 
 /*
  * thread handler
@@ -41,5 +43,6 @@ pthread_t initDrone (int index) ;
 
 int targetAndClientPresent(Client* client);
 
+int computeTotalWeight(Client* clients[] ,int size);
 
 #endif //DRONEDELIVERYSYSTEM_DRONE_HPP
