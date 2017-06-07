@@ -12,8 +12,7 @@ Client* clients[CLIENT_NUMBER];
 int isDelivered[CLIENT_NUMBER];
 int isDelivering[CLIENT_NUMBER];
 
-Client* clientToDeliver;
-Client** clientToDeliver2;
+Client** clientToDeliver;
 int clientToDeliverSize = 0;
 
 
@@ -72,7 +71,6 @@ Client ** selectNeighborsClients(Drone *drone, Client *clientToDeliver, Client *
     }
 	// maybe swap above loop by memcpy if it works
 	//memcpy(selection,toTest,sizeof(Client*)*selectionSize);
-
     free(toTest);// Release memory space allocated to toTest
     printf("Drone %d will travel with %d client(s) to deliver\n",pthread_self(),*selectionSize);
 	return selection;
@@ -83,20 +81,17 @@ void * manageCommand(void *data) {
 	do {
 		for(int i = 0; i < CLIENT_NUMBER; ++i) {
 			if(!isDelivered[i] && !isDelivering[i]) {
-				Client* client = clients[i];
-				clientToDeliver = clients[i];
 				/* Find a drone who can deliver the client*/
 				int found = 0;
 				do {
 					for(int k = 0; k < DRONES_NUMBER; ++k) {
 						if(drones[k]->state == Available) {
-							Client ** test2 = clientToDeliver2;
+							if(canDeliver(drones[k], clients[i])) {
 
-							if(canDeliver(drones[k], clientToDeliver)) {
-								// TODO : use selectNeighborsClients to deliver multiple clients
-								clientToDeliver2 = selectNeighborsClients(drones[k],clients[i],clientToDeliver2,&clientToDeliverSize);
+								clientToDeliver = selectNeighborsClients(drones[k],clients[i],clientToDeliver,&clientToDeliverSize);
+								for(int j = 0 ; j < clientToDeliverSize;++j)
+									isDelivering[clientToDeliver[j]->id] = 1;
 								drones[k]->state = Moving;
-								test2 = clientToDeliver2;
 								message = 1;
 								sem_post(&semDrones[k]);
 								sem_wait(&semSynch);

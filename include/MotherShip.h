@@ -15,8 +15,7 @@ extern Client* clients[];
 extern int isDelivered[CLIENT_NUMBER];
 extern int isDelivering[CLIENT_NUMBER];
 
-extern Client* clientToDeliver;
-extern Client** clientToDeliver2;
+extern Client** clientToDeliver;
 extern int clientToDeliverSize;
 
 extern Drone* drones[DRONES_NUMBER];

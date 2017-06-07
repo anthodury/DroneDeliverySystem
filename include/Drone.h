@@ -4,6 +4,7 @@
 #include <Package.h>
 #include <Client.h>
 #define MOVE_BATTERY_COST 2
+#define MOVE_DURATION 100000
 #define MAX_BATTERY 2*MAX_DISTANCE*(MAX_WEIGHT+MOVE_BATTERY_COST+MAX_WIND) + 1
 
 
@@ -27,13 +28,14 @@ int canDeliver2(Drone* drone, Client *arrayClients[], int size);
 /*
  * Delivers the client
  */
-void deliver(Drone* drone, Client* client);
+void  deliver(Drone* drone,Client * clients [] , int size);
+
 
 /*
  * moves
  */
-void move(Drone* drone, Client* client);
-void move2(Drone* drone , int weight) ;
+void move(Drone* drone , int weight) ;
+
 
 
 /*
