@@ -137,7 +137,7 @@ int areAllDelivered(){
 	}
 	/* init client struct*/
 	for(int i = 0 ; i < CLIENT_NUMBER; ++i) {
-		clients[i] = (Client*) malloc(sizeof(Drone));
+		clients[i] = (Client*) malloc(sizeof(Client));
 		*clients[i] = createClient();
 		clients[i]->id = i;
 	}
