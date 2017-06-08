@@ -2,9 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <MotherShip.h>
+
 
 void *changeWeather(void *data) {
-    while(1){
+    while(message != FINISHED){
 	    pthread_mutex_lock(&mutexWind);
 	    wind = rand() % MAX_WIND;
 	    printf("Wind changed to %d\n",wind);

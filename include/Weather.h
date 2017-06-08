@@ -1,7 +1,6 @@
 #ifndef DRONEDELIVERYSYSTEM_WEATHER_HPP
 #define DRONEDELIVERYSYSTEM_WEATHER_HPP
 
-#include <sys/param.h>
 #include <pthread.h>
 #define MAX_WIND 5
 #define WEATHER_SLEEP 2 + rand() % 8

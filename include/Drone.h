@@ -9,7 +9,7 @@
 
 
 /* Available : at mother ship , Waiting : Drone arrived client's garden and waiting for him*/
-typedef enum {Available,Moving,Waiting} State;
+typedef enum {Available,Moving,Waiting,Recharging} State;
 
 typedef struct {
 	int maxBattery;
@@ -28,7 +28,7 @@ int canDeliver2(Drone* drone, Client *arrayClients[], int size);
 /*
  * Delivers the client
  */
-void  deliver(Drone* drone,Client * clients [] , int size);
+void  deliver(Drone* drone,Client * toDeliver[] , int size);
 
 
 /*
@@ -42,7 +42,6 @@ void move(Drone* drone , int weight) ;
  * thread handler
  */
 void * run (void * data) ;
-pthread_t initDrone (int index) ;
 
 int targetAndClientPresent(Client* client);
 

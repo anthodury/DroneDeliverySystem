@@ -2,10 +2,10 @@
 #include <Drone.h>
 #include <Weather.h>
 #include <TrafficLanes.h>
-#include <time.h>
 #include <MotherShip.h>
-#include <Package.h>
-
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
 
 // TODO: Make drones deliver multiple clients if possible
 Drone createDrone() {
@@ -34,33 +34,33 @@ int canDeliver2(Drone* drone, Client *arrayClient[], int size) {
 }
 
 
-void  deliver(Drone* drone,Client * clients [] , int size) {
+void  deliver(Drone* drone,Client * toDeliver [] , int size) {
 	int distance = 0;
-	int weight = computeTotalWeight(clients,size);
-	int trafficLane = clients[0]->trafficLane;
+	int weight = computeTotalWeight(toDeliver,size);
+	int trafficLane = toDeliver[0]->trafficLane;
 
 	//sort clients by  increasing distance
-	qsort(clients,size,sizeof(Client*),compareClientsByDistance);
+	qsort(toDeliver,size,sizeof(Client*),compareClientsByDistance);
 	//printf(" sort : %d %d",clients[0]->distance,clients[1]->distance);
 
 	/* go deliver all clients*/
 	for(int i = 0 ; i < size; ++i) {
-		for(distance;distance < clients[i]->distance ; ++distance) {
+		for(distance;distance < toDeliver[i]->distance ; ++distance) {
 			pthread_mutex_lock(&mutexLanes[trafficLane][0]);
 			move(drone,weight);
 			usleep(MOVE_DURATION);
 			pthread_mutex_unlock(&mutexLanes[trafficLane][0]);
 		}
-		if(targetAndClientPresent(clients[i])) {
-			printf("Ready for delivery\n");
-			isDelivered[clients[i]->id] = 1;
-			weight -= clients[i]->command->weight;
+		if(targetAndClientPresent(toDeliver[i])) {
+			printf("Drone %d delivered client %d\n",pthread_self(),toDeliver[i]->id);
+			isDelivered[toDeliver[i]->id] = 1;
+			weight -= toDeliver[i]->command->weight;
 		}
 	}
-	printf("Drone %d delivered last Client Battery : %d \n",pthread_self(),drone->currentBattery);
+	printf("Drone %d delivered last Client, Battery : %d \n",pthread_self(),drone->currentBattery);
 
 	/* go back to the Mother Ship*/
-	for(int i = 0 ; i < clients[size-1]->distance; ++i) {
+	for(int i = 0 ; i < toDeliver[size-1]->distance; ++i) {
 		pthread_mutex_lock(&mutexLanes[trafficLane][1]);
 		move(drone,weight);
 		usleep(MOVE_DURATION);
@@ -70,8 +70,9 @@ void  deliver(Drone* drone,Client * clients [] , int size) {
 
 	/* update isDelivering*/
 	for(int i = 0 ; i < size; ++i)
-		isDelivering[clients[i]->id] = 0;
+		isDelivering[toDeliver[i]->id] = 0;
 	drone->state = Available;
+	free(toDeliver);
 
 }
 
@@ -82,7 +83,7 @@ int targetAndClientPresent(Client* client){
 	for(int i=0;i<10;++i){
 		if(hasTarget(client) ){
 			targetPresent=1;
-			printf("OK, target is present\n");
+			//printf("OK, target is present\n");
 			break;
 		}
 		//printf("Target is not present. Will leave if no target in %d seconds\n",10-i);
@@ -98,7 +99,7 @@ int targetAndClientPresent(Client* client){
 		for(int i=0;i<30;++i){
 			if(isPresent(client)){
 				clientPresent=1;
-				printf("OK, client is present\n");
+				//printf("OK, client is present\n");
 				break;
 			}
 			//printf("Client is not present. Will leave if no client in %d seconds\n",30-i);
@@ -134,7 +135,9 @@ void * run (void * data) {
 	while(1) {
 		/* wait for MotherShip to unlock */
 		sem_wait(&semDrones[id]);
-		if(message) {
+		if(message == FINISHED)
+			break;
+		if(message == DELIVER) {
 			Client** toDeliver = clientToDeliver;
 			int size = clientToDeliverSize;
 			sem_post(&semSynch);
@@ -147,8 +150,4 @@ void * run (void * data) {
 
 }
 
-pthread_t initDrone (int index) {
-	pthread_t threadDrone;
-	pthread_create(&threadDrone,NULL,run,(void*)index);
-}
 
