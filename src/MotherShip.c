@@ -68,13 +68,11 @@ Client ** selectNeighborsClients(Drone *drone, Client *clientToDeliver, Client *
 	// maybe swap above loop by memcpy if it works
 	//memcpy(selection,toTest,sizeof(Client*)*selectionSize);
     free(toTest);// Release memory space allocated to toTest
-    printf("Drone %p will travel with %d client(s) to deliver\n",drone,*selectionSize);
+    printf("Drone %p will travel with %d client(s) to deliver\n",(void*)drone,*selectionSize);
 	return selection;
 }
 
 void * manageCommand(void *data) {
-	Client* temp[CLIENT_NUMBER];
-	for (int i = 0 ; i < CLIENT_NUMBER; ++i) temp[i] = clients[i];
 	printf("MotherShip thr : %lu\n", pthread_self());
 	do {
 		for(int i = 0; i < CLIENT_NUMBER; ++i) {
@@ -112,8 +110,6 @@ void * manageCommand(void *data) {
 	for(int i = 0; i < DRONES_NUMBER ; ++ i) {
 		sem_post(&semDrones[i]);
 	}
-
-
 	return NULL;
 }
 
@@ -156,8 +152,10 @@ int areAllDelivered(){
 	pthread_create(&motherShipTh,NULL,manageCommand,NULL);
 
 	pthread_join(motherShipTh,NULL);
-	for(int i = 0 ; i < DRONES_NUMBER; ++i)
-		pthread_join(threadDrone[i],NULL);
+	for(int i = 0 ; i < DRONES_NUMBER; ++i) {
+		pthread_join(threadDrone[i], NULL);
+		free(drones[i]);
+	}
 	pthread_join(threadWeather,NULL);
 
 	for(int i = 0 ; i < CLIENT_NUMBER; ++i) {

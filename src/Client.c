@@ -6,13 +6,13 @@
 Client createClient() {
 	Package * package = (Package*) malloc(sizeof(Package));
 	*package = createPackage();
-	return (Client) {1+(rand()%MAX_DISTANCE),rand()%MAX_TRAFFIC_LANES,package};
+	return (Client) {1+(rand()%MAX_DISTANCE),rand()%MAX_TRAFFIC_LANES,package,0};
 }
 
-int isPresent(Client *client) {
+int isPresent() {
 	return ((rand()%100) < PERCENTAGE_PRESENCE_CLIENT);
 }
-int hasTarget(Client *client) {
+int hasTarget() {
 	return ((rand()%100) < PERCENTAGE_PRESENCE_TARGET);
 }
 

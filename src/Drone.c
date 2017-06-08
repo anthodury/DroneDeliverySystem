@@ -45,7 +45,7 @@ void  deliver(Drone* drone,Client * toDeliver [] , int size) {
 
 	/* go deliver all clients*/
 	for(int i = 0 ; i < size; ++i) {
-		for(distance;distance < toDeliver[i]->distance ; ++distance) {
+		for(;distance < toDeliver[i]->distance ; ++distance) {
 			pthread_mutex_lock(&mutexLanes[trafficLane][0]);
 			move(drone,weight);
 			usleep(MOVE_DURATION);
@@ -157,7 +157,7 @@ void * run (void * data) {
 			recharge(drone);
 		}
 	}
-
+	return NULL;
 }
 
 

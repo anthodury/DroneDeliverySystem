@@ -2,8 +2,9 @@
 #include <pthread.h>
 #include <MotherShip.h>
 
-void main() {
+int main() {
 	initMotherShip();
 	pthread_exit(NULL);
+	return 0;
 }
 

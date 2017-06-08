@@ -13,6 +13,7 @@ void *changeWeather(void *data) {
 	    pthread_mutex_unlock(&mutexWind);
 	    sleep(WEATHER_SLEEP);
     }
+	return NULL;
 }
 
 pthread_t initWeather(void) {
