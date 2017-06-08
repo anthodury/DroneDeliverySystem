@@ -32,16 +32,16 @@ void recharge(Drone* drone) {
 	int available ;
 	sem_getvalue(&semRecharge,&available);
 	if(available <=0) {
-		printf("Drone %d WAITING for free charger\n", pthread_self());
+		printf("Drone %lu WAITING for free charger\n", pthread_self());
 	}
 	sem_wait(&semRecharge);
-	printf("Drone %d RECHARGING : Battery : %d\n",pthread_self(),drone->currentBattery);
+	printf("Drone %lu RECHARGING : Battery : %d\n",pthread_self(),drone->currentBattery);
 	for(int i = drone->currentBattery ; i < drone->maxBattery ; ++ i ) {
 		usleep(10000);
 		drone->currentBattery ++ ;
 	}
 	sem_post(&semRecharge);
-	printf("Drone %d FINISHED RECHARGING\n", pthread_self());
+	printf("Drone %lu FINISHED RECHARGING\n", pthread_self());
 	drone->state=Available;
 }
 
@@ -73,9 +73,9 @@ Client ** selectNeighborsClients(Drone *drone, Client *clientToDeliver, Client *
 }
 
 void * manageCommand(void *data) {
-	Client* temp [CLIENT_NUMBER];
+	Client* temp[CLIENT_NUMBER];
 	for (int i = 0 ; i < CLIENT_NUMBER; ++i) temp[i] = clients[i];
-	printf("MotherShip thr : %d\n", pthread_self());
+	printf("MotherShip thr : %lu\n", pthread_self());
 	do {
 		for(int i = 0; i < CLIENT_NUMBER; ++i) {
 			if(!isDelivered[clients[i]->id] && !isDelivering[clients[i]->id]) {
