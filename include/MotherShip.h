@@ -3,7 +3,8 @@
 
 #include <semaphore.h>
 #include <Drone.h>
-#define CHARGER 1
+#define CHARGER 4
+#define EXIT_NBR 1
 #define DRONES_NUMBER 4
 #define CLIENT_NUMBER 20
 
@@ -22,7 +23,9 @@ extern int clientToDeliverSize;
 
 extern Drone* drones[DRONES_NUMBER];
 extern sem_t semDrones[DRONES_NUMBER];
-extern sem_t semSynch;
+extern sem_t semSynch ;
+
+extern sem_t semExit ;
 
 extern Message message;
 

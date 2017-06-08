@@ -19,8 +19,13 @@ Drone* drones[DRONES_NUMBER];
 //pthread_mutex_t semDrones [DRONES_NUMBER];
 sem_t semDrones[DRONES_NUMBER];
 sem_t semSynch ;
+
+sem_t semExit ;
+
 // message for the current drone
 Message message;
+
+
 
 
 void recharge(Drone* drone) {
@@ -144,6 +149,7 @@ int areAllDelivered(){
 	pthread_t motherShipTh ;
 	sem_init(&semSynch,0,0);
 	sem_init(&semRecharge,0,CHARGER);
+	sem_init(&semExit,0,EXIT_NBR);
 
 	//Sorting clients by higher priority
 	qsort(clients, CLIENT_NUMBER, sizeof(Client*), compareClientsByPriority);

@@ -141,6 +141,16 @@ void * run (void * data) {
 			Client** toDeliver = clientToDeliver;
 			int size = clientToDeliverSize;
 			sem_post(&semSynch);
+			/* exiting ship*/
+			int available;
+			sem_getvalue(&semExit,&available);
+			if(available <=0) {
+				printf("Drone %d WAITING for available exit\n", pthread_self());
+			}
+			sem_wait(&semExit);
+			sleep(2);
+			sem_post(&semExit);
+
 			deliver(drone,toDeliver,size);
 		}
 		else {
