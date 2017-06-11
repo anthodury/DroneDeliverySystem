@@ -156,6 +156,8 @@ int areAllDelivered(){
 		pthread_join(threadDrone[i], NULL);
 		free(drones[i]);
 	}
+
+	if(pthread_cancel(threadWeather)) printf("Problem to stop Weather thread");
 	pthread_join(threadWeather,NULL);
 
 	for(int i = 0 ; i < CLIENT_NUMBER; ++i) {

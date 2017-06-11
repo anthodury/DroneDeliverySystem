@@ -6,14 +6,15 @@
 
 
 void *changeWeather(void *data) {
-    while(message != FINISHED){
+  //  while(message != FINISHED){
+    while(1){
 	    pthread_mutex_lock(&mutexWind);
 	    wind = rand() % MAX_WIND;
 	    printf("Wind changed to %d\n",wind);
 	    pthread_mutex_unlock(&mutexWind);
 	    sleep(WEATHER_SLEEP);
     }
-	return NULL;
+	//return NULL;
 }
 
 pthread_t initWeather(void) {
