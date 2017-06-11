@@ -46,10 +46,10 @@ void  deliver(Drone* drone,Client * toDeliver [] , int size) {
 	/* go deliver all clients*/
 	for(int i = 0 ; i < size; ++i) {
 		for(;distance < toDeliver[i]->distance ; ++distance) {
-			pthread_mutex_lock(&mutexLanes[trafficLane][0]);
+			pthread_mutex_lock(&mutexLanes[trafficLane][distance][0]);
 			move(drone,weight);
 			usleep(MOVE_DURATION);
-			pthread_mutex_unlock(&mutexLanes[trafficLane][0]);
+			pthread_mutex_unlock(&mutexLanes[trafficLane][distance][0]);
 		}
 		if(targetAndClientPresent(toDeliver[i])) {
 			printf("Drone %lu delivered client %d\n",pthread_self(),toDeliver[i]->id);
@@ -60,11 +60,11 @@ void  deliver(Drone* drone,Client * toDeliver [] , int size) {
 	printf("Drone %lu delivered last Client, Battery : %d \n",pthread_self(),drone->currentBattery);
 
 	/* go back to the Mother Ship*/
-	for(int i = 0 ; i < toDeliver[size-1]->distance; ++i) {
-		pthread_mutex_lock(&mutexLanes[trafficLane][1]);
+	for(int i = toDeliver[size-1]->distance ; i >=0 ; --i) {
+		pthread_mutex_lock(&mutexLanes[trafficLane][i][1]);
 		move(drone,weight);
 		usleep(MOVE_DURATION);
-		pthread_mutex_unlock(&mutexLanes[trafficLane][1]);
+		pthread_mutex_unlock(&mutexLanes[trafficLane][i][1]);
 	}
 	printf("Drone %lu arrived at MotherShip  Battery : %d\n",pthread_self(),drone->currentBattery);
 
@@ -147,10 +147,10 @@ void * run (void * data) {
 			if(available <=0) {
 				printf("Drone %lu WAITING for available exit\n", pthread_self());
 			}
+
 			sem_wait(&semExit);
 			sleep(2);
 			sem_post(&semExit);
-
 			deliver(drone,toDeliver,size);
 		}
 		else {

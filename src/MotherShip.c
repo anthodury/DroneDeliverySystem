@@ -65,6 +65,8 @@ Client ** selectNeighborsClients(Drone *drone, Client *clientToDeliver, Client *
 	for(int i=0;i<*selectionSize;++i){
         selection[i]=toTest[i];
     }
+
+
 	// maybe swap above loop by memcpy if it works
 	//memcpy(selection,toTest,sizeof(Client*)*selectionSize);
     free(toTest);// Release memory space allocated to toTest
@@ -88,8 +90,8 @@ void * manageCommand(void *data) {
 									isDelivering[clientToDeliver[j]->id] = 1;
 								drones[k]->state = Moving;
 								message = DELIVER;
-								sem_post(&semDrones[k]);
-								sem_wait(&semSynch);
+								sem_post(&semDrones[k]); // m1 unlock
+								sem_wait(&semSynch); // m2 lock
 								found = 1;
 								break;
 							}
