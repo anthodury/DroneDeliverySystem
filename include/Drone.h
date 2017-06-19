@@ -19,20 +19,47 @@ typedef struct {
 
 Drone createDrone();
 
-/*
- * returns if the Drone has enough battery to deliver the Client client
+
+/*------------------------------------------------------------------------*//**
+ * @brief      Compute if the drone has enough battery to deliver the client.
+ *
+ * @param[in]  drone  The drone
+ * @param[in]  client The client to deliver
+ *
+ * @return     returns if the drone has enough battery to deliver the client.
  */
 int canDeliver(Drone* drone, Client* client);
+
+/*------------------------------------------------------------------------*//**
+ * @brief      Compute if the drone has enough battery to deliver several
+ *             clients.
+ *
+ * @param[in]  drone  The drone
+ * @param[in]  arrayClients The clients to deliver
+ * @param[in]  size The number of client to deliver
+ *
+ * @return     returns if the drone has enough battery to deliver the
+ *             clients.
+ */
 int canDeliver2(Drone* drone, Client *arrayClients[], int size);
 
-/*
- * Delivers the client
+/*------------------------------------------------------------------------*//**
+ * @brief      Manages the delivery of several clients by a drone
+ *
+ * @param[in]  drone  The drone
+ * @param[in]  arrayClients The clients to deliver
+ * @param[in]  size The number of client to deliver
+ *
  */
 void  deliver(Drone* drone,Client * toDeliver[] , int size);
 
 
-/*
- * moves
+/*------------------------------------------------------------------------*//**
+ * @brief      Make the drone move one distance.
+ *
+ * @param[in]  drone  The drone
+ * @param[in]  weight The total weight of the transported packages.
+ *
  */
 void move(Drone* drone , int weight) ;
 
