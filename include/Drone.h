@@ -80,4 +80,11 @@ int targetAndClientPresent(Client* client);
  */
 int computeTotalWeight(Client* clients[] ,int size);
 
+/*------------------------------------------------------------------------*//**
+ * @brief      The function of each drone's thread.
+ *
+ * @param[in]  data The index of the drone
+ */
+void * run (void * data);
+
 #endif //DRONEDELIVERYSYSTEM_DRONE_HPP
