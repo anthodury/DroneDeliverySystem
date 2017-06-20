@@ -7,9 +7,8 @@
 #include <stdio.h>
 #include <unistd.h>
 
-// TODO: Make drones deliver multiple clients if possible
-Drone createDrone() {
-	return (Drone) {MAX_BATTERY,MAX_BATTERY,Available};
+Drone createDrone(int id) {
+	return (Drone) {MAX_BATTERY,MAX_BATTERY,Available, id};
 }
 
 int canDeliver(Drone* drone, Client* client) {
@@ -52,12 +51,12 @@ void  deliver(Drone* drone,Client * toDeliver [] , int size) {
 			pthread_mutex_unlock(&mutexLanes[trafficLane][distance][0]);
 		}
 		if(targetAndClientPresent(toDeliver[i])) {
-			printf("Drone %lu delivered client %d\n",pthread_self(),toDeliver[i]->id);
+			printf("Drone %d delivered client %d\n",drone->id,toDeliver[i]->id);
 			isDelivered[toDeliver[i]->id] = 1;
 			weight -= toDeliver[i]->command->weight;
 		}
 	}
-	printf("Drone %lu delivered last Client, Battery : %d \n",pthread_self(),drone->currentBattery);
+	printf("Drone %d going back to MotherShip Battery : %d \n",drone->id,drone->currentBattery);
 
 	/* go back to the Mother Ship*/
 	for(int i = toDeliver[size-1]->distance ; i >=0 ; --i) {
@@ -66,7 +65,7 @@ void  deliver(Drone* drone,Client * toDeliver [] , int size) {
 		usleep(MOVE_DURATION);
 		pthread_mutex_unlock(&mutexLanes[trafficLane][i][1]);
 	}
-	printf("Drone %lu arrived at MotherShip  Battery : %d\n",pthread_self(),drone->currentBattery);
+	printf("Drone %d arrived at MotherShip  Battery : %d\n",drone->id,drone->currentBattery);
 
 	/* update isDelivering*/
 	for(int i = 0 ; i < size; ++i)
@@ -145,7 +144,7 @@ void * run (void * data) {
 			int available;
 			sem_getvalue(&semExit,&available);
 			if(available <=0) {
-				printf("Drone %lu WAITING for available exit\n", pthread_self());
+				printf("Drone %d WAITING for available exit\n", drone->id);
 			}
 
 			sem_wait(&semExit);

@@ -15,9 +15,10 @@ typedef struct {
 	int maxBattery;
 	int currentBattery;
 	State state;
+	int id;
 } Drone;
 
-Drone createDrone();
+Drone createDrone(int id);
 
 
 /*------------------------------------------------------------------------*//**

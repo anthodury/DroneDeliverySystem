@@ -16,7 +16,6 @@ int clientToDeliverSize = 0;
 
 
 Drone* drones[DRONES_NUMBER];
-//pthread_mutex_t semDrones [DRONES_NUMBER];
 sem_t semDrones[DRONES_NUMBER];
 sem_t semSynch ;
 
@@ -70,7 +69,6 @@ Client ** selectNeighborsClients(Drone *drone, Client *clientToDeliver, Client *
 	// maybe swap above loop by memcpy if it works
 	//memcpy(selection,toTest,sizeof(Client*)*selectionSize);
     free(toTest);// Release memory space allocated to toTest
-    printf("Drone %p will travel with %d client(s) to deliver\n",(void*)drone,*selectionSize);
 	return selection;
 }
 
@@ -86,6 +84,7 @@ void * manageCommand(void *data) {
 						if(drones[k]->state == Available) {
 							if(canDeliver(drones[k], clients[i])) {
 								clientToDeliver = selectNeighborsClients(drones[k],clients[i],clientToDeliver,&clientToDeliverSize);
+								printf("Drone %d will travel with %d client(s) to deliver\n",k,clientToDeliverSize);
 								for(int j = 0 ; j < clientToDeliverSize;++j)
 									isDelivering[clientToDeliver[j]->id] = 1;
 								drones[k]->state = Moving;
@@ -134,7 +133,7 @@ int areAllDelivered(){
 	for(int i = 0 ; i < DRONES_NUMBER ; ++i) {
 		sem_init(&semDrones[i],0,0);
 		drones[i] = (Drone*) malloc(sizeof(Drone));
-		*drones[i] = createDrone();
+		*drones[i] = createDrone(i);
 		pthread_create(&threadDrone[i],NULL,run,(void*)i);
 	}
 	/* init client struct*/
