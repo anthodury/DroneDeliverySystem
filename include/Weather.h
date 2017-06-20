@@ -9,7 +9,18 @@
 int wind ;
 pthread_mutex_t mutexWind;
 
+/*------------------------------------------------------------------------*//**
+ * @brief      Initializes the weather's thread.
+ *
+ * @return     The weather's thread.
+ */
 pthread_t initWeather(void);
+
+/*------------------------------------------------------------------------*//**
+ * @brief      The function of the weather's thread
+ *
+ * @param[in]  data Not used
+ */
 void *changeWeather(void *data);
 
 #endif //DRONEDELIVERYSYSTEM_WEATHER_HPP

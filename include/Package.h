@@ -11,6 +11,11 @@ typedef struct {
 	int weight;
 } Package;
 
+/*------------------------------------------------------------------------*//**
+ * @brief      Randomly creates a package.
+ *
+ * @return     returns a random package.
+ */
 Package createPackage();
 
 #endif //DRONEDELIVERYSYSTEM_PACKAGE_HPP

@@ -11,7 +11,6 @@
 typedef enum {DELIVER,RECHARGE,FINISHED} Message;
 
 
-//TODO: SLOTS
 
 extern sem_t semRecharge;
 extern Client* clients[];
@@ -30,10 +29,32 @@ extern sem_t semExit ;
 extern Message message;
 
 
-
+/*------------------------------------------------------------------------*//**
+ *
+ * @brief      initialize several mutex and semaphore, clients and drones,
+ *             threads and others ...
+ */
 void initMotherShip ();
+
+/*------------------------------------------------------------------------*//**
+ * @brief      Recharges the battery of a given drone.
+ *
+ * @param[in]  drone The drone
+ */
 void recharge(Drone* drone);
+
+/*------------------------------------------------------------------------*//**
+ * @brief      The function of the MotherShip's thread.
+ *
+ * @param[in]  data Not used
+ */
 void * manageCommand(void *data);
+
+/*------------------------------------------------------------------------*//**
+ * @brief      Checks if all the clients are delivered.
+ *
+ * @return     returns if all the clients are delivered.
+ */
 int areAllDelivered();
 
 #endif //DRONEDELIVERYSYSTEM_MOTHERSHIP_HPP

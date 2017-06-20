@@ -9,6 +9,10 @@
 /* mutex to make sure Drones don't crash into each other*/
 pthread_mutex_t mutexLanes[MAX_TRAFFIC_LANES][MAX_DISTANCE][2];
 
+/*------------------------------------------------------------------------*//**
+ *
+ * @brief      initialize mutexLanes variable.
+ */
 void initLanesMutex() ;
 
 #endif //DRONEDELIVERYSYSTEM_TRAFFICLANE_H

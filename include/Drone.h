@@ -49,7 +49,6 @@ int canDeliver2(Drone* drone, Client *arrayClients[], int size);
  * @param[in]  drone  The drone
  * @param[in]  arrayClients The clients to deliver
  * @param[in]  size The number of client to deliver
- *
  */
 void  deliver(Drone* drone,Client * toDeliver[] , int size);
 
@@ -59,19 +58,26 @@ void  deliver(Drone* drone,Client * toDeliver[] , int size);
  *
  * @param[in]  drone  The drone
  * @param[in]  weight The total weight of the transported packages.
- *
  */
 void move(Drone* drone , int weight) ;
 
-
-
-/*
- * thread handler
+/*------------------------------------------------------------------------*//**
+ * @brief      Check if the client and his target are present.
+ *
+ * @param[in]  client The client to deliver.
+ *
+ * @return     returns if the client and his target are present.
  */
-void * run (void * data) ;
-
 int targetAndClientPresent(Client* client);
 
+/*------------------------------------------------------------------------*//**
+ * @brief      Compute the total weight of the given clients's packages.
+ *
+ * @param[in]  clients The clients
+ * @param[in]  size    The number of clients.
+ *
+ * @return     returns the total weight of the given clients's packages.
+ */
 int computeTotalWeight(Client* clients[] ,int size);
 
 #endif //DRONEDELIVERYSYSTEM_DRONE_HPP
