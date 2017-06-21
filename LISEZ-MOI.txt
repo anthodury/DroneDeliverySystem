@@ -1,0 +1,33 @@
+COMPILATION
+-----------
+Se placer dans le répertoire contenant le fichier makefile.
+Avec un terminal, compiler avec la commande "make".
+
+EXECUTION
+---------
+L'exéctuable créé se nomme delivery. L'exécuter avec la commande "./delivery". Le programme est alors
+démarré, les messages apparaissent sur le terminal.
+
+PARAMETRES
+----------
+L'exécutable ne prend pas de paramètres. Pour modifier ces derniers, modifier les valeurs
+des #define dans les fichiers d'en tête (*.h) du repertoire include.
+
+/!\ Après modification des paramètres, effectuer un "make clean". 
+Puis effectuer de nouveau l'étape COMPILATION puis EXECUTION. /!\
+
+Les principaux paramètres sont dans le fichier MotherShip.h du repertoire include :
+
+	#define CHARGER 4
+	Pour définir le nombre de chargeurs
+
+	#define EXIT_NBR 1
+	Pour définir le nombre de portes de sorties
+
+	#define DRONES_NUMBER 4
+	Pour définir le nombre de drones
+
+	#define CLIENT_NUMBER 20
+	Pour définir le nombre de clients
+	
+Le comportement des autres paramètres est decrit dans le rapport.
