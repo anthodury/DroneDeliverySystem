@@ -10,10 +10,9 @@ démarré, les messages apparaissent sur le terminal.
 
 PARAMETRES
 ----------
-L'exécutable ne prend pas de paramètres. Pour modifier ces derniers, modifier les valeurs
-des #define dans les fichiers d'en tête (*.h) du repertoire include.
+L'exécutable ne prend pas de paramètres. Nous avons cependant défini des constantes dans des #define dans les fichiers d'en tête (*.h) du repertoire include que vous pouvez modifier.
 
-/!\ Après modification des paramètres, effectuer un "make clean". 
+/!\ Après modification des paramètres, enregistrez et effectuez un "make clean" sur le terminal. 
 Puis effectuer de nouveau l'étape COMPILATION puis EXECUTION. /!\
 
 Les principaux paramètres sont dans le fichier MotherShip.h du repertoire include :
@@ -30,4 +29,4 @@ Les principaux paramètres sont dans le fichier MotherShip.h du repertoire includ
 	#define CLIENT_NUMBER 20
 	Pour définir le nombre de clients
 	
-Le comportement des autres paramètres est decrit dans le rapport.
+Le comportement des autres paramètres est décrit dans le rapport.
