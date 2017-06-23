@@ -3,7 +3,7 @@
 
 #include <semaphore.h>
 #include <Drone.h>
-#define CHARGER 4
+#define CHARGER 1
 #define EXIT_NBR 1
 #define DRONES_NUMBER 4
 #define CLIENT_NUMBER 20

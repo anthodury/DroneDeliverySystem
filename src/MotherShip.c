@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <Weather.h>
 #include <TrafficLanes.h>
+#include <Drone.h>
 
 sem_t semRecharge;
 Client* clients[CLIENT_NUMBER];
@@ -31,16 +32,16 @@ void recharge(Drone* drone) {
 	int available ;
 	sem_getvalue(&semRecharge,&available);
 	if(available <=0) {
-		printf("Drone %lu WAITING for free charger\n", pthread_self());
+		printf("Drone %d WAITING for free charger\n", drone->id);
 	}
 	sem_wait(&semRecharge);
-	printf("Drone %lu RECHARGING : Battery : %d\n",pthread_self(),drone->currentBattery);
+	printf("Drone %d RECHARGING : Battery : %d\n",drone->id,drone->currentBattery);
 	for(int i = drone->currentBattery ; i < drone->maxBattery ; ++ i ) {
 		usleep(10000);
 		drone->currentBattery ++ ;
 	}
 	sem_post(&semRecharge);
-	printf("Drone %lu FINISHED RECHARGING\n", pthread_self());
+	printf("Drone %d FINISHED RECHARGING\n", drone->id);
 	drone->state=Available;
 }
 
